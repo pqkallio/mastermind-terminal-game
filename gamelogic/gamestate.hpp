@@ -15,7 +15,7 @@ class GameState {
     int current_row = 0;
 
   public:
-    GameState();
+    GameState(int secret[len_row]);
 
     int get_matches();
     int get_correct();
