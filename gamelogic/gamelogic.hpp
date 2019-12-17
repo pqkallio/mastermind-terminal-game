@@ -7,7 +7,7 @@ class GameLogic {
   private:
     GameState* state;
   public:
-    GameLogic();
+    GameLogic(int n_same_color);
 };
 
 #endif /* GAMELOGIC_HPP */

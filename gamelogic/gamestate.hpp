@@ -12,7 +12,7 @@ class GameState {
   private:
     int secret[len_row] = {0};
     int rows[n_rows][len_row] = {0};
-    int current_row = 0;
+    int current_row;
 
   public:
     GameState(int secret[len_row]);
@@ -20,7 +20,7 @@ class GameState {
     int get_matches();
     int get_correct();
     void set(int place, int color);
-    Status *finalize();
+    Status *finalize_round();
 };
 
 #endif /* GAMESTATE_H */

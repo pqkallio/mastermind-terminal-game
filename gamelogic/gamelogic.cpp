@@ -1,23 +1,22 @@
 #include <stdlib.h>
+#include <algorithm>
 #include "gamelogic.hpp"
 
-GameLogic::GameLogic() {
-  int secret[len_row] = {0};
+GameLogic::GameLogic(int n_same_color) {
+  n_same_color = std::max(1, n_same_color);
 
-  for (int i = 0; i < len_row; i++) {
+  int secret[len_row] = {0};
+  int occurences[8] = {0};
+
+  for (int i = 0; i < len_row;) {
     bool insertable = true;
     int r_choice = rand() % 8 + 1;
 
-    for (int j = 0; j < i; j++) {
-      if (secret[j] == r_choice) {
-        insertable = false;
-        i--;
-        break;
-      }
-    }
+    occurences[i]++;
 
-    if (insertable) {
+    if (occurences[i] <= n_same_color) {
       secret[i] = r_choice;
+      i++;
     }
   }
 
