@@ -1,6 +1,6 @@
 #include <ncurses.h>
 #include <iostream>
-#include "windows/playfield.hpp"
+#include "gui/windows/playfield.hpp"
 
 Window* playfield;
 
