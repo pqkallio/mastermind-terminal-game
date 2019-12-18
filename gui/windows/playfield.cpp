@@ -10,6 +10,7 @@ void Playfield::init_color_pairs() {
   init_pair(BLUE,   COLOR_BLUE,   COLOR_BLUE);
   init_pair(CYAN,   COLOR_CYAN,   COLOR_CYAN);
   init_pair(GREEN,  COLOR_GREEN,  COLOR_GREEN);
+  init_pair(GREY,   COLOR_BLACK,  COLOR_WHITE);
 }
 
 void Playfield::init_window() {
@@ -24,14 +25,6 @@ void Playfield::init_window() {
 Playfield::Playfield() {
   this->init_color_pairs();
   this->init_window();
-
-  int PIECE_COLORS_LEN = 9;
-
-  for (int i = 1; i <= PIECE_COLORS_LEN; i++) {
-    wattron(this->playfield, COLOR_PAIR(i));
-    mvwaddch(this->playfield, 1, i, ACS_CKBOARD);
-    wattroff(this->playfield, COLOR_PAIR(i));
-  }
 }
 
 Playfield::~Playfield() {

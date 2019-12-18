@@ -14,19 +14,27 @@
 #define BLUE    7
 #define CYAN    8
 #define GREEN   9
+#define GREY    10
+
+static const int N_PIECES                     = 4;
+static const int N_PIECE_COLORS               = 9;
+static const int PIECE_COLORS[N_PIECE_COLORS] = {
+  BLACK, WHITE, YELLOW, ORANGE,
+  RED, PURPLE, BLUE, CYAN, GREEN
+};
 
 class Playfield: public Window {
-  const int           START_ROW   = LINES - 3;
-  const int           START_COL   = 2;
-  const int           ROW_INC     = -2;
-  const int           COL_INC     = 2;
-  const int           WIN_WIDTH   = 11;
-  const int           WIN_HEIGHT  = 21;
+  const int WIN_WIDTH   = 11;
+  const int WIN_HEIGHT  = 21;
+  const int START_ROW   = WIN_HEIGHT - 3;
+  const int START_COL   = 2;
+  const int ROW_INC     = -2;
+  const int COL_INC     = 2;
 
   private:
     WINDOW* playfield;
     int current_row;
-    VisualPiece visualPieces[4];
+    VisualPiece visualPieces[N_PIECES];
     void init_color_pairs();
     void init_window();
 
