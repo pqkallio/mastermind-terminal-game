@@ -27,8 +27,8 @@ Playfield::Playfield() {
   this->init_color_pairs();
   this->init_window();
 
-  this->current_col = START_COL;
-  this->current_row = START_ROW;
+  this->current_col = 0;
+  this->current_row = 0;
 }
 
 Playfield::~Playfield() {
@@ -50,25 +50,72 @@ void Playfield::add_row() {
   this->current_row += Playfield::ROW_INC;
 }
 
-void Playfield::highlight(int y, int x) {
+void Playfield::surround(int y, int x, char l, char r) {
   wattron(this->playfield, COLOR_PAIR(WHITE_ON_BLACK));
-  mvwaddch(this->playfield, y, x - 1, '[');
-  mvwaddch(this->playfield, y, x + 1, ']');
+  mvwaddch(this->playfield, y, x - 1, l);
+  mvwaddch(this->playfield, y, x + 1, r);
   wattron(this->playfield, COLOR_PAIR(WHITE_ON_BLACK));
-
-  this->refresh();
 }
 
-void Playfield::handle_input(char ch) {
+void Playfield::highlight(int y, int x) {
+  this->surround(y, x, '[', ']');
+}
 
+void Playfield::unhighlight(int y, int x) {
+  this->surround(y, x, ' ', ' ');
+}
+
+int Playfield::view_col(int x) {
+  return START_COL + x * COL_FACTOR;
+}
+
+int Playfield::view_row(int y) {
+  return START_ROW + y * ROW_FACTOR;
+}
+
+void Playfield::rehighlight(int y, int x) {
+  int vy = this->view_row(this->current_row);
+  int vx = this->view_col(this->current_col);
+
+  this->unhighlight(vy, vx);
+
+  this->current_row = y;
+  int nx = x < 0 ? x += 4 : x;
+  nx %= 4;
+  this->current_col = nx;
+
+  vy = this->view_row(this->current_row);
+  vx = this->view_col(this->current_col);
+
+  this->highlight(vy, vx);
+}
+
+void Playfield::handle_input(int c) {
+  switch (c) {
+    case KEY_LEFT:
+      this->rehighlight(this->current_row, this->current_col - COL_INC);
+      break;
+    case KEY_RIGHT:
+      this->rehighlight(this->current_row, this->current_col + COL_INC);
+      break;
+    case 10: /* ENTER KEY */
+      this->rehighlight(this->current_row + ROW_INC, 0);
+      break;
+  }
 }
 
 void Playfield::run() {
+  int vy = this->view_row(this->current_row);
+  int vx = this->view_col(this->current_col);
+
+  this->highlight(vy, vx);
+  this->refresh();
+
   while (1) {
-    this->highlight(current_row, current_col);
+    int c = wgetch(this->playfield);
 
-    char ch = wgetch(this->playfield);
+    this->handle_input(c);
 
-    this->handle_input(ch);
+    this->refresh();
   }
 }

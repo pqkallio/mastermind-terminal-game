@@ -28,8 +28,10 @@ class Playfield: public Window {
   const int WIN_HEIGHT  = 21;
   const int START_ROW   = WIN_HEIGHT - 3;
   const int START_COL   = 2;
-  const int ROW_INC     = -2;
-  const int COL_INC     = 2;
+  const int ROW_FACTOR  = -2;
+  const int COL_FACTOR  = 2;
+  const int ROW_INC     = 1;
+  const int COL_INC     = 1;
 
   private:
     WINDOW* playfield;
@@ -39,7 +41,12 @@ class Playfield: public Window {
     void init_color_pairs();
     void init_window();
     void highlight(int y, int x);
-    void handle_input(char ch);
+    void rehighlight(int y, int x);
+    void unhighlight(int y, int x);
+    void handle_input(int c);
+    int view_col(int x);
+    int view_row(int y);
+    void surround(int y, int x, char l, char r);
 
   public:
     Playfield();
