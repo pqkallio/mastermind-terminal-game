@@ -1,3 +1,8 @@
 # executable
 mastermind
+
+# vscode project folder
 .vscode
+
+# object files
+*.o
