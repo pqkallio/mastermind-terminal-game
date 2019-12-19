@@ -3,7 +3,6 @@
 
 #include <ncurses.h>
 #include "window.hpp"
-#include "../visualpiece.hpp"
 
 #define BLACK_PIECE     1
 #define WHITE_PIECE     2
@@ -24,12 +23,12 @@ static const int PIECE_COLORS[N_PIECE_COLORS] = {
 };
 
 class Playfield: public Window {
-  const int WIN_WIDTH   = 11;
-  const int WIN_HEIGHT  = 21;
+  const int WIN_WIDTH   = 15;
+  const int WIN_HEIGHT  = 23;
   const int START_ROW   = WIN_HEIGHT - 3;
   const int START_COL   = 2;
   const int ROW_FACTOR  = -2;
-  const int COL_FACTOR  = 2;
+  const int COL_FACTOR  = 3;
   const int ROW_INC     = 1;
   const int COL_INC     = 1;
 
@@ -37,16 +36,24 @@ class Playfield: public Window {
     WINDOW* playfield;
     int current_row;
     int current_col;
-    VisualPiece visualPieces[N_PIECES];
+    int pieces[N_PIECES];
+    int unselected;
     void init_color_pairs();
     void init_window();
+    void clear_pieces();
     void highlight(int y, int x);
     void rehighlight(int y, int x);
     void unhighlight(int y, int x);
     void handle_input(int c);
     int view_col(int x);
     int view_row(int y);
-    void surround(int y, int x, char l, char r);
+    void change_piece_color(int n);
+    void surround(
+      int y, int x,
+      int ul, int ll, int ur, int lr,
+      int ls, int rs, int ts, int bs
+    );
+    void update_piece();
 
   public:
     Playfield();
