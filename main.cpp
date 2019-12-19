@@ -2,7 +2,7 @@
 #include <iostream>
 #include "gui/windows/playfield.hpp"
 
-Window* playfield;
+Playfield* playfield;
 
 void register_exit_handler(void (*exit_handler)()) {
   int result = std::atexit(exit_handler);
@@ -13,7 +13,7 @@ void register_exit_handler(void (*exit_handler)()) {
   }
 }
 
-Window* init_playfield() {
+Playfield* init_playfield() {
   auto playfield = new Playfield();
   playfield->refresh();
 
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
   initwin();
 
-  getch();
+  playfield->run();
 
   return 0;
 }

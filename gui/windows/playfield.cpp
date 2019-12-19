@@ -1,16 +1,16 @@
 #include "playfield.hpp"
 
 void Playfield::init_color_pairs() {
-  init_pair(BLACK,  COLOR_BLACK,  COLOR_BLACK);
-  init_pair(WHITE,  COLOR_WHITE,  COLOR_WHITE);
-  init_pair(YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-  init_pair(ORANGE, COLOR_YELLOW, COLOR_RED);
-  init_pair(RED,    COLOR_RED,    COLOR_RED);
-  init_pair(PURPLE, COLOR_RED,    COLOR_BLUE);
-  init_pair(BLUE,   COLOR_BLUE,   COLOR_BLUE);
-  init_pair(CYAN,   COLOR_CYAN,   COLOR_CYAN);
-  init_pair(GREEN,  COLOR_GREEN,  COLOR_GREEN);
-  init_pair(GREY,   COLOR_BLACK,  COLOR_WHITE);
+  init_pair(BLACK_PIECE,    COLOR_BLACK,  COLOR_BLACK);
+  init_pair(WHITE_PIECE,    COLOR_WHITE,  COLOR_WHITE);
+  init_pair(YELLOW_PIECE,   COLOR_YELLOW, COLOR_YELLOW);
+  init_pair(ORANGE_PIECE,   COLOR_YELLOW, COLOR_RED);
+  init_pair(RED_PIECE,      COLOR_RED,    COLOR_RED);
+  init_pair(PURPLE_PIECE,   COLOR_RED,    COLOR_BLUE);
+  init_pair(BLUE_PIECE,     COLOR_BLUE,   COLOR_BLUE);
+  init_pair(CYAN_PIECE,     COLOR_CYAN,   COLOR_CYAN);
+  init_pair(GREEN_PIECE,    COLOR_GREEN,  COLOR_GREEN);
+  init_pair(WHITE_ON_BLACK, COLOR_WHITE,  COLOR_BLACK);
 }
 
 void Playfield::init_window() {
@@ -18,13 +18,26 @@ void Playfield::init_window() {
   int x = (COLS - Playfield::WIN_WIDTH) / 2;
 
   this->playfield = newwin(Playfield::WIN_HEIGHT, Playfield::WIN_WIDTH, y, x);
+  noecho();
   keypad(this->playfield, true);
   box(this->playfield, 0, 0);
+}
+
+void Playfield::clear_pieces() {
+  for (int i = 0; i < N_PIECES; i++) {
+    this->pieces[i] = 0;
+  }
+
+  this->unselected = N_PIECES;
 }
 
 Playfield::Playfield() {
   this->init_color_pairs();
   this->init_window();
+  this->clear_pieces();
+
+  this->current_col = 0;
+  this->current_row = 0;
 }
 
 Playfield::~Playfield() {
@@ -36,12 +49,138 @@ void Playfield::refresh() {
 }
 
 void Playfield::add_row() {
-  for (auto &visualPiece : this->visualPieces) {
-    visualPiece.color = 0;
-    visualPiece.selected = false;
+  if (this->unselected > 0) {
+    return;
   }
 
-  this->visualPieces[0].selected = true;
+  this->rehighlight(this->current_row + ROW_INC, 0);
 
-  this->current_row += Playfield::ROW_INC;
+  this->clear_pieces();
+}
+
+void Playfield::surround(
+  int y, int x,
+  int ul, int ll, int ur, int lr,
+  int ls, int rs, int ts, int bs
+) {
+  wattron(this->playfield, COLOR_PAIR(WHITE_ON_BLACK));
+
+  // add corners
+  mvwaddch(this->playfield, y - 1, x - 1, ul);
+  mvwaddch(this->playfield, y + 1, x - 1, ll);
+  mvwaddch(this->playfield, y - 1, x + 2, ur);
+  mvwaddch(this->playfield, y + 1, x + 2, lr);
+
+  // add sides
+  mvwaddch(this->playfield, y, x - 1, ls);
+  mvwaddch(this->playfield, y, x + 2, rs);
+  mvwaddch(this->playfield, y - 1, x, ts);
+  mvwaddch(this->playfield, y + 1, x, bs);
+
+  wattron(this->playfield, COLOR_PAIR(WHITE_ON_BLACK));
+}
+
+void Playfield::highlight(int y, int x) {
+  this->surround(
+    y, x,
+    ACS_ULCORNER, ACS_LLCORNER, ACS_URCORNER, ACS_LRCORNER,
+    ' ', ' ', ' ', ' '
+  );
+}
+
+void Playfield::unhighlight(int y, int x) {
+  this->surround(
+    y, x,
+    ' ', ' ', ' ', ' ',
+    ' ', ' ', ' ', ' '
+  );
+}
+
+int Playfield::view_col(int x) {
+  return START_COL + x * COL_FACTOR;
+}
+
+int Playfield::view_row(int y) {
+  return START_ROW + y * ROW_FACTOR;
+}
+
+void Playfield::rehighlight(int y, int x) {
+  int vy = this->view_row(this->current_row);
+  int vx = this->view_col(this->current_col);
+
+  this->unhighlight(vy, vx);
+
+  this->current_row = y;
+  int nx = x < 0 ? x += 4 : x;
+  nx %= 4;
+  this->current_col = nx;
+
+  vy = this->view_row(this->current_row);
+  vx = this->view_col(this->current_col);
+
+  this->highlight(vy, vx);
+}
+
+void Playfield::change_piece_color(int n) {
+  int c = this->pieces[this->current_col];
+  bool us = c == 0;
+  c = c + n;
+
+  if (c < 0) {
+    c += N_PIECE_COLORS;
+  }
+
+  c = c % N_PIECE_COLORS;
+
+  if (us && c != 0) {
+    this->unselected--;
+  } else if (!us && c == 0) {
+    this->unselected++;
+  }
+
+  this->pieces[this->current_col] = c;
+
+  int vy = view_row(this->current_row);
+  int vx = view_col(this->current_col);
+
+  wattron(this->playfield, COLOR_PAIR(c + 1));
+  mvwaddch(this->playfield, vy, vx, ACS_CKBOARD);
+  mvwaddch(this->playfield, vy, vx + 1, ACS_CKBOARD);
+  wattroff(this->playfield, COLOR_PAIR(c + 1));
+}
+
+void Playfield::handle_input(int c) {
+  switch (c) {
+    case KEY_LEFT:
+      this->rehighlight(this->current_row, this->current_col - COL_INC);
+      break;
+    case KEY_RIGHT:
+      this->rehighlight(this->current_row, this->current_col + COL_INC);
+      break;
+    case KEY_UP:
+      this->change_piece_color(1);
+      break;
+    case KEY_DOWN:
+      this->change_piece_color(-1);
+      break;
+    case 10: /* ENTER KEY */
+      this->add_row();
+      break;
+  }
+}
+
+void Playfield::run() {
+  int vy = this->view_row(this->current_row);
+  int vx = this->view_col(this->current_col);
+
+  this->highlight(vy, vx);
+  this->refresh();
+
+  while (1) {
+    int c = wgetch(this->playfield);
+
+    this->handle_input(c);
+
+    this->refresh();
+  }
 }
