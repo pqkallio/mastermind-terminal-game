@@ -17,3 +17,5 @@ Feedback::~Feedback() {
 void Feedback::refresh() {
   wrefresh(this->feedback);
 }
+
+void Feedback::print_result(int round, int n_hits, int n_near) {}

@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include <iostream>
-#include "windows/game.hpp"
+#include "gamelogic/game.hpp"
+#include "gui/gui.hpp"
 
 Game *game;
 
@@ -27,7 +28,8 @@ void initwin() {
 
   refresh();
 
-  game = new Game(1);
+  UserInterface* ui = new GUI();
+  game = new Game(1, ui);
 }
 
 void tidy() {

@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <ncurses.h>
-#include "window.hpp"
 
 #define BLACK_PIECE     1
 #define WHITE_PIECE     2
@@ -28,7 +27,7 @@ namespace PF {
   const int WIN_HEIGHT  = 23;
 }
 
-class Playfield: public Window {
+class Playfield {
   const int START_ROW   = PF::WIN_HEIGHT - 3;
   const int START_COL   = 2;
   const int ROW_FACTOR  = -2;

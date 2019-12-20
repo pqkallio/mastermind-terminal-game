@@ -1,20 +1,18 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "playfield.hpp"
-#include "feedback.hpp"
+#include "user_interface.hpp"
 
 const int LEN_ROW = 4;
 
 class Game {
   private:
-    Playfield* playfield;
-    Feedback* feedback;
+    UserInterface* ui;
     int secret[LEN_ROW];
     int round;
 
   public:
-    Game(int n_same_color);
+    Game(int n_same_color, UserInterface* ui);
     ~Game();
     void run();
 };

@@ -2,7 +2,7 @@ CXX = g++
 
 src = $(wildcard src/*.cpp) \
 			$(wildcard src/gamelogic/*.cpp) \
-			$(wildcard src/windows/*.cpp)
+			$(wildcard src/gui/*.cpp)
 obj = $(src:.cpp=.o)
 
 LDFLAGS = -lncurses

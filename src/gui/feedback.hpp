@@ -2,14 +2,13 @@
 #define FEEDBACK_H
 
 #include <ncurses.h>
-#include "window.hpp"
 
 namespace FB {
   const int WIN_WIDTH = 6;
   const int WIN_HEIGHT = 23;
 }
 
-class Feedback : public Window {
+class Feedback {
   const int START_ROW = FB::WIN_HEIGHT - 3;
 
   private:
