@@ -23,10 +23,13 @@ static const int PIECE_COLORS[N_PIECE_COLORS] = {
   RED_PIECE, PURPLE_PIECE, BLUE_PIECE, CYAN_PIECE, GREEN_PIECE
 };
 
-class Playfield: public Window {
+namespace PF {
   const int WIN_WIDTH   = 15;
   const int WIN_HEIGHT  = 23;
-  const int START_ROW   = WIN_HEIGHT - 3;
+}
+
+class Playfield: public Window {
+  const int START_ROW   = PF::WIN_HEIGHT - 3;
   const int START_COL   = 2;
   const int ROW_FACTOR  = -2;
   const int COL_FACTOR  = 3;
@@ -40,7 +43,7 @@ class Playfield: public Window {
     int pieces[N_PIECES];
     int unselected;
     void init_color_pairs();
-    void init_window();
+    void init_window(int y, int x);
     void clear_pieces();
     void highlight(int y, int x);
     void rehighlight(int y, int x);
@@ -58,7 +61,7 @@ class Playfield: public Window {
     bool add_row();
 
   public:
-    Playfield();
+    Playfield(int y, int x);
     ~Playfield();
     void refresh();
     void run();

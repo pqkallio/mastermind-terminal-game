@@ -13,11 +13,8 @@ void Playfield::init_color_pairs() {
   init_pair(WHITE_ON_BLACK, COLOR_WHITE,  COLOR_BLACK);
 }
 
-void Playfield::init_window() {
-  int y = (LINES - Playfield::WIN_HEIGHT) / 2;
-  int x = (COLS - Playfield::WIN_WIDTH) / 2;
-
-  this->playfield = newwin(Playfield::WIN_HEIGHT, Playfield::WIN_WIDTH, y, x);
+void Playfield::init_window(int y, int x) {
+  this->playfield = newwin(PF::WIN_HEIGHT, PF::WIN_WIDTH, y, x);
   noecho();
   keypad(this->playfield, true);
   box(this->playfield, 0, 0);
@@ -31,9 +28,9 @@ void Playfield::clear_pieces() {
   this->unselected = N_PIECES;
 }
 
-Playfield::Playfield() {
+Playfield::Playfield(int y, int x) {
   this->init_color_pairs();
-  this->init_window();
+  this->init_window(y, x);
   this->clear_pieces();
 
   this->current_col = 0;
