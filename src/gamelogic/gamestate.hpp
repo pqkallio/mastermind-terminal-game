@@ -2,7 +2,7 @@
 #define GAMESTATE_H
 
 const int n_rows = 10;
-const int len_row = 4;
+const int LEN_ROW = 4;
 typedef struct status_t {
   int hit;
   int near;
@@ -10,12 +10,12 @@ typedef struct status_t {
 
 class GameState {
   private:
-    int secret[len_row] = {0};
-    int rows[n_rows][len_row] = {0};
+    int secret[LEN_ROW] = {0};
+    int rows[n_rows][LEN_ROW] = {0};
     int current_row;
 
   public:
-    GameState(int secret[len_row]);
+    GameState(int secret[LEN_ROW]);
 
     int get_matches();
     int get_correct();

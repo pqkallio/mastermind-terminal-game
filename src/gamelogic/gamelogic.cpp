@@ -5,10 +5,10 @@
 GameLogic::GameLogic(int n_same_color) {
   n_same_color = std::max(1, n_same_color);
 
-  int secret[len_row] = {0};
+  int secret[LEN_ROW] = {0};
   int occurences[8] = {0};
 
-  for (int i = 0; i < len_row;) {
+  for (int i = 0; i < LEN_ROW;) {
     bool insertable = true;
     int r_choice = rand() % 8 + 1;
 

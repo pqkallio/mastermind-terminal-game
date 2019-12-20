@@ -1,6 +1,7 @@
 #ifndef PLAYFIELD_HPP
 #define PLAYFIELD_HPP
 
+#include <vector>
 #include <ncurses.h>
 #include "window.hpp"
 
@@ -44,7 +45,7 @@ class Playfield: public Window {
     void highlight(int y, int x);
     void rehighlight(int y, int x);
     void unhighlight(int y, int x);
-    void handle_input(int c);
+    bool handle_input(int c);
     int view_col(int x);
     int view_row(int y);
     void change_piece_color(int n);
@@ -54,13 +55,14 @@ class Playfield: public Window {
       int ls, int rs, int ts, int bs
     );
     void update_piece();
+    bool add_row();
 
   public:
     Playfield();
     ~Playfield();
     void refresh();
-    void add_row();
     void run();
+    std::vector<int> get_selection(int round);
 };
 
 #endif /* PLAYFIELD_HPP */

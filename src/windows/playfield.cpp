@@ -48,14 +48,12 @@ void Playfield::refresh() {
   wrefresh(this->playfield);
 }
 
-void Playfield::add_row() {
+bool Playfield::add_row() {
   if (this->unselected > 0) {
-    return;
+    return false;
   }
 
-  this->rehighlight(this->current_row + ROW_INC, 0);
-
-  this->clear_pieces();
+  return true;
 }
 
 void Playfield::surround(
@@ -149,23 +147,24 @@ void Playfield::change_piece_color(int n) {
   wattroff(this->playfield, COLOR_PAIR(c + 1));
 }
 
-void Playfield::handle_input(int c) {
+bool Playfield::handle_input(int c) {
   switch (c) {
     case KEY_LEFT:
       this->rehighlight(this->current_row, this->current_col - COL_INC);
-      break;
+      return false;
     case KEY_RIGHT:
       this->rehighlight(this->current_row, this->current_col + COL_INC);
-      break;
+      return false;
     case KEY_UP:
       this->change_piece_color(1);
-      break;
+      return false;
     case KEY_DOWN:
       this->change_piece_color(-1);
-      break;
+      return false;
     case 10: /* ENTER KEY */
-      this->add_row();
-      break;
+      return this->add_row();
+    default:
+      return false;
   }
 }
 
@@ -183,4 +182,39 @@ void Playfield::run() {
 
     this->refresh();
   }
+}
+
+std::vector<int> Playfield::get_selection(int round) {
+  this->current_row = round;
+  this->current_col = 0;
+
+  int vy = this->view_row(this->current_row);
+  int vx = this->view_col(this->current_col);
+
+  this->highlight(vy, vx);
+  this->refresh();
+
+  while (true) {
+    int c = wgetch(this->playfield);
+
+    bool selection_done = this->handle_input(c);
+
+    if (selection_done) {
+      vy = this->view_row(this->current_row);
+      vx = this->view_col(this->current_col);
+
+      this->unhighlight(vy, vx);
+      this->refresh();
+
+      break;
+    }
+
+    this->refresh();
+  }
+
+  std::vector<int> selection = std::vector<int>(4, *this->pieces);
+
+  this->clear_pieces();
+
+  return selection;
 }

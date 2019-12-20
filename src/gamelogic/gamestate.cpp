@@ -1,7 +1,7 @@
 #include "gamestate.hpp"
 
-GameState::GameState(int secret[len_row]) {
-  for (int i = 0; i < len_row; i++) {
+GameState::GameState(int secret[LEN_ROW]) {
+  for (int i = 0; i < LEN_ROW; i++) {
     this->secret[i] = secret[i];
   }
 
