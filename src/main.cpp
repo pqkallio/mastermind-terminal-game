@@ -1,8 +1,9 @@
 #include <ncurses.h>
 #include <iostream>
-#include "windows/playfield.hpp"
+#include "gamelogic/game.hpp"
+#include "gui/gui.hpp"
 
-Playfield* playfield;
+Game *game;
 
 void register_exit_handler(void (*exit_handler)()) {
   int result = std::atexit(exit_handler);
@@ -11,13 +12,6 @@ void register_exit_handler(void (*exit_handler)()) {
     std::cerr << "Failed to register cleanup procedures, exiting..." << std::endl;
     return exit(EXIT_FAILURE);
   }
-}
-
-Playfield* init_playfield() {
-  auto playfield = new Playfield();
-  playfield->refresh();
-
-  return playfield;
 }
 
 void initwin() {
@@ -34,23 +28,24 @@ void initwin() {
 
   refresh();
 
-  playfield = init_playfield();
+  UserInterface* ui = new GUI();
+  game = new Game(1, ui);
 }
 
-void finwin() {
-  if (playfield != nullptr) {
-    delete playfield;
+void tidy() {
+  if (game != nullptr) {
+    delete game;
   }
 
   endwin();
 }
 
 int main(int argc, char* argv[]) {
-  register_exit_handler(finwin);
+  register_exit_handler(tidy);
 
   initwin();
 
-  playfield->run();
+  game->run();
 
   return 0;
 }

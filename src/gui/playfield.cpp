@@ -1,39 +1,23 @@
 #include "playfield.hpp"
+#include "colors.hpp"
 
-void Playfield::init_color_pairs() {
-  init_pair(BLACK_PIECE,    COLOR_BLACK,  COLOR_BLACK);
-  init_pair(WHITE_PIECE,    COLOR_WHITE,  COLOR_WHITE);
-  init_pair(YELLOW_PIECE,   COLOR_YELLOW, COLOR_YELLOW);
-  init_pair(ORANGE_PIECE,   COLOR_YELLOW, COLOR_RED);
-  init_pair(RED_PIECE,      COLOR_RED,    COLOR_RED);
-  init_pair(PURPLE_PIECE,   COLOR_RED,    COLOR_BLUE);
-  init_pair(BLUE_PIECE,     COLOR_BLUE,   COLOR_BLUE);
-  init_pair(CYAN_PIECE,     COLOR_CYAN,   COLOR_CYAN);
-  init_pair(GREEN_PIECE,    COLOR_GREEN,  COLOR_GREEN);
-  init_pair(WHITE_ON_BLACK, COLOR_WHITE,  COLOR_BLACK);
-}
-
-void Playfield::init_window() {
-  int y = (LINES - Playfield::WIN_HEIGHT) / 2;
-  int x = (COLS - Playfield::WIN_WIDTH) / 2;
-
-  this->playfield = newwin(Playfield::WIN_HEIGHT, Playfield::WIN_WIDTH, y, x);
+void Playfield::init_window(int y, int x) {
+  this->playfield = newwin(PF::WIN_HEIGHT, PF::WIN_WIDTH, y, x);
   noecho();
   keypad(this->playfield, true);
   box(this->playfield, 0, 0);
 }
 
 void Playfield::clear_pieces() {
-  for (int i = 0; i < N_PIECES; i++) {
+  for (int i = 0; i < rules::LEN_ROW; i++) {
     this->pieces[i] = 0;
   }
 
-  this->unselected = N_PIECES;
+  this->unselected = rules::LEN_ROW;
 }
 
-Playfield::Playfield() {
-  this->init_color_pairs();
-  this->init_window();
+Playfield::Playfield(int y, int x) {
+  this->init_window(y, x);
   this->clear_pieces();
 
   this->current_col = 0;
@@ -48,14 +32,12 @@ void Playfield::refresh() {
   wrefresh(this->playfield);
 }
 
-void Playfield::add_row() {
+bool Playfield::add_row() {
   if (this->unselected > 0) {
-    return;
+    return false;
   }
 
-  this->rehighlight(this->current_row + ROW_INC, 0);
-
-  this->clear_pieces();
+  return true;
 }
 
 void Playfield::surround(
@@ -111,8 +93,8 @@ void Playfield::rehighlight(int y, int x) {
   this->unhighlight(vy, vx);
 
   this->current_row = y;
-  int nx = x < 0 ? x += 4 : x;
-  nx %= 4;
+  int nx = x < 0 ? x += rules::LEN_ROW : x;
+  nx %= rules::LEN_ROW;
   this->current_col = nx;
 
   vy = this->view_row(this->current_row);
@@ -149,38 +131,62 @@ void Playfield::change_piece_color(int n) {
   wattroff(this->playfield, COLOR_PAIR(c + 1));
 }
 
-void Playfield::handle_input(int c) {
+bool Playfield::handle_input(int c) {
   switch (c) {
     case KEY_LEFT:
       this->rehighlight(this->current_row, this->current_col - COL_INC);
-      break;
+      return false;
     case KEY_RIGHT:
       this->rehighlight(this->current_row, this->current_col + COL_INC);
-      break;
+      return false;
     case KEY_UP:
       this->change_piece_color(1);
-      break;
+      return false;
     case KEY_DOWN:
       this->change_piece_color(-1);
-      break;
+      return false;
     case 10: /* ENTER KEY */
-      this->add_row();
-      break;
+      return this->add_row();
+    default:
+      return false;
   }
 }
 
-void Playfield::run() {
+std::vector<int> Playfield::get_selection(int round) {
+  this->current_row = round;
+  this->current_col = 0;
+
   int vy = this->view_row(this->current_row);
   int vx = this->view_col(this->current_col);
 
   this->highlight(vy, vx);
   this->refresh();
 
-  while (1) {
+  while (true) {
     int c = wgetch(this->playfield);
 
-    this->handle_input(c);
+    bool selection_done = this->handle_input(c);
+
+    if (selection_done) {
+      vy = this->view_row(this->current_row);
+      vx = this->view_col(this->current_col);
+
+      this->unhighlight(vy, vx);
+      this->refresh();
+
+      break;
+    }
 
     this->refresh();
   }
+
+  std::vector<int> selection = std::vector<int>(rules::LEN_ROW);
+
+  for (int i = 0; i < rules::LEN_ROW; i++) {
+    selection[i] = this->pieces[i];
+  }
+
+  this->clear_pieces();
+
+  return selection;
 }
