@@ -1,6 +1,9 @@
 #include "gui.hpp"
+#include "colors.hpp"
 
 GUI::GUI() {
+  init_colors();
+
   int tw = PF::WIN_WIDTH + FB::WIN_WIDTH;
   int pfx = (COLS - tw) / 2;
   int y = (LINES - PF::WIN_HEIGHT) / 2;

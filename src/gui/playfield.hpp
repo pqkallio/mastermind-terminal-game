@@ -3,17 +3,7 @@
 
 #include <vector>
 #include <ncurses.h>
-
-#define BLACK_PIECE     1
-#define WHITE_PIECE     2
-#define YELLOW_PIECE    3
-#define ORANGE_PIECE    4
-#define RED_PIECE       5
-#define PURPLE_PIECE    6
-#define BLUE_PIECE      7
-#define CYAN_PIECE      8
-#define GREEN_PIECE     9
-#define WHITE_ON_BLACK  10
+#include "colors.hpp"
 
 static const int N_PIECES                     = 4;
 static const int N_PIECE_COLORS               = 9;
@@ -41,7 +31,6 @@ class Playfield {
     int current_col;
     int pieces[N_PIECES];
     int unselected;
-    void init_color_pairs();
     void init_window(int y, int x);
     void clear_pieces();
     void highlight(int y, int x);

@@ -10,6 +10,7 @@ namespace FB {
 
 class Feedback {
   const int START_ROW = FB::WIN_HEIGHT - 3;
+  const int ROW_INC = -2;
 
   private:
     WINDOW *feedback;
