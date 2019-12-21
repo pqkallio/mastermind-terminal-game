@@ -15,6 +15,7 @@ class Feedback {
 
   private:
     WINDOW *feedback;
+    void insert(int y, int x, int n, int c);
 
   public:
     Feedback(int y, int x);
