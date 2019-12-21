@@ -5,7 +5,10 @@
 
 class UserInterface {
   public:
-    virtual std::vector<int> get_selection(int round) {}
+    virtual ~UserInterface() {}
+    virtual std::vector<int> get_selection(int round) {
+      return std::vector<int>();
+    }
     virtual void set_score(int round, int n_hits, int n_near) {}
     virtual void finish_game() {}
 };

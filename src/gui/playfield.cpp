@@ -9,11 +9,11 @@ void Playfield::init_window(int y, int x) {
 }
 
 void Playfield::clear_pieces() {
-  for (int i = 0; i < N_PIECES; i++) {
+  for (int i = 0; i < rules::LEN_ROW; i++) {
     this->pieces[i] = 0;
   }
 
-  this->unselected = N_PIECES;
+  this->unselected = rules::LEN_ROW;
 }
 
 Playfield::Playfield(int y, int x) {
@@ -93,8 +93,8 @@ void Playfield::rehighlight(int y, int x) {
   this->unhighlight(vy, vx);
 
   this->current_row = y;
-  int nx = x < 0 ? x += 4 : x;
-  nx %= 4;
+  int nx = x < 0 ? x += rules::LEN_ROW : x;
+  nx %= rules::LEN_ROW;
   this->current_col = nx;
 
   vy = this->view_row(this->current_row);
@@ -152,22 +152,6 @@ bool Playfield::handle_input(int c) {
   }
 }
 
-void Playfield::run() {
-  int vy = this->view_row(this->current_row);
-  int vx = this->view_col(this->current_col);
-
-  this->highlight(vy, vx);
-  this->refresh();
-
-  while (1) {
-    int c = wgetch(this->playfield);
-
-    this->handle_input(c);
-
-    this->refresh();
-  }
-}
-
 std::vector<int> Playfield::get_selection(int round) {
   this->current_row = round;
   this->current_col = 0;
@@ -196,7 +180,11 @@ std::vector<int> Playfield::get_selection(int round) {
     this->refresh();
   }
 
-  std::vector<int> selection = std::vector<int>(4, *this->pieces);
+  std::vector<int> selection = std::vector<int>(rules::LEN_ROW);
+
+  for (int i = 0; i < rules::LEN_ROW; i++) {
+    selection[i] = this->pieces[i];
+  }
 
   this->clear_pieces();
 

@@ -3,12 +3,16 @@
 
 #include "user_interface.hpp"
 
-const int LEN_ROW = 4;
+namespace rules {
+  const int MAX_ROUNDS = 12;
+  const int LEN_ROW = 4;
+  const int NUM_COLORS = 8;
+}
 
 class Game {
   private:
     UserInterface* ui;
-    int secret[LEN_ROW];
+    int secret[rules::LEN_ROW];
     int round;
 
   public:

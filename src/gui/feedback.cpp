@@ -23,9 +23,6 @@ void Feedback::print_result(int round, int n_hits, int n_near) {
   int y = START_ROW + ROW_INC * round;
   int x = 1;
 
-  mvprintw(1, 1, "%d, %d, %d", round, n_hits, n_near);
-  wrefresh(stdscr);
-
   wattron(this->feedback, COLOR_PAIR(RED_ON_BLACK));
   for (int i = 0; i < n_hits; i++) {
     mvwaddch(this->feedback, y, x, ACS_DIAMOND);

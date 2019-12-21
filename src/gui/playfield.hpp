@@ -4,8 +4,8 @@
 #include <vector>
 #include <ncurses.h>
 #include "colors.hpp"
+#include "../gamelogic/game.hpp"
 
-static const int N_PIECES                     = 4;
 static const int N_PIECE_COLORS               = 9;
 static const int PIECE_COLORS[N_PIECE_COLORS] = {
   BLACK_PIECE, WHITE_PIECE, YELLOW_PIECE, ORANGE_PIECE,
@@ -14,7 +14,7 @@ static const int PIECE_COLORS[N_PIECE_COLORS] = {
 
 namespace PF {
   const int WIN_WIDTH   = 15;
-  const int WIN_HEIGHT  = 23;
+  const int WIN_HEIGHT  = rules::MAX_ROUNDS * 2 + 3;
 }
 
 class Playfield {
@@ -29,7 +29,7 @@ class Playfield {
     WINDOW* playfield;
     int current_row;
     int current_col;
-    int pieces[N_PIECES];
+    int pieces[rules::LEN_ROW];
     int unselected;
     void init_window(int y, int x);
     void clear_pieces();
@@ -52,7 +52,6 @@ class Playfield {
     Playfield(int y, int x);
     ~Playfield();
     void refresh();
-    void run();
     std::vector<int> get_selection(int round);
 };
 

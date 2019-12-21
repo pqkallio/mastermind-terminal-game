@@ -2,10 +2,11 @@
 #define FEEDBACK_H
 
 #include <ncurses.h>
+#include "../gamelogic/game.hpp"
 
 namespace FB {
   const int WIN_WIDTH = 6;
-  const int WIN_HEIGHT = 23;
+  const int WIN_HEIGHT = 2 * rules::MAX_ROUNDS + 3;
 }
 
 class Feedback {
