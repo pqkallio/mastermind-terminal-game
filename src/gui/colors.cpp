@@ -12,4 +12,5 @@ void init_colors() {
   init_pair(GREEN_PIECE,    COLOR_GREEN,  COLOR_GREEN);
   init_pair(WHITE_ON_BLACK, COLOR_WHITE,  COLOR_BLACK);
   init_pair(RED_ON_BLACK,   COLOR_RED,    COLOR_BLACK);
+  init_pair(UNKNOWN_PIECE,  COLOR_BLACK,  COLOR_WHITE);
 }

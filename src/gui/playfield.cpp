@@ -1,5 +1,6 @@
 #include "playfield.hpp"
 #include "colors.hpp"
+#include "util.hpp"
 
 void Playfield::init_window(int y, int x) {
   this->playfield = newwin(PF::WIN_HEIGHT, PF::WIN_WIDTH, y, x);
@@ -125,10 +126,7 @@ void Playfield::change_piece_color(int n) {
   int vy = view_row(this->current_row);
   int vx = view_col(this->current_col);
 
-  wattron(this->playfield, COLOR_PAIR(c + 1));
-  mvwaddch(this->playfield, vy, vx, ACS_CKBOARD);
-  mvwaddch(this->playfield, vy, vx + 1, ACS_CKBOARD);
-  wattroff(this->playfield, COLOR_PAIR(c + 1));
+  render_piece(this->playfield, vy, vx, c + 1);
 }
 
 bool Playfield::handle_input(int c) {

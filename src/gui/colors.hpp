@@ -14,6 +14,7 @@
 #define GREEN_PIECE     9
 #define WHITE_ON_BLACK  10
 #define RED_ON_BLACK    11
+#define UNKNOWN_PIECE   12
 
 void init_colors();
 
