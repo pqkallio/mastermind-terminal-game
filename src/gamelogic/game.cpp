@@ -56,10 +56,11 @@ void Game::run() {
     this->ui->set_score(this->round, n_hits, n_near);
 
     if (n_hits == rules::LEN_ROW) {
-      this->ui->finish_game(rules::LEN_ROW, this->secret);
       break;
     }
 
     this->round++;
   }
+
+  this->ui->finish_game(rules::LEN_ROW, this->secret);
 }
