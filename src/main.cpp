@@ -47,8 +47,6 @@ int main(int argc, char* argv[]) {
 
   game->run();
 
-  delete game;
-
   getch();
 
   return 0;
