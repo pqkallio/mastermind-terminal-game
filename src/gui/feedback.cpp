@@ -6,7 +6,7 @@ Feedback::Feedback(int y, int x) {
 
   wborder(
     this->feedback,
-    ACS_VLINE, '|', '-', '-',
+    ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE,
     ACS_TTEE, ACS_URCORNER, ACS_BTEE, ACS_LRCORNER
   );
 }

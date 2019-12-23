@@ -11,12 +11,14 @@ namespace SF {
 
 class SecretField {
   private:
-    int* secret;
+    const int PSY = 2;
+    const int PSX = 2;
     WINDOW* secretfield;
+    void render_pieces(int n, int* colors);
   public:
-    SecretField(int* secret);
+    SecretField(int y, int x);
     ~SecretField();
-    void endgame();
+    void endgame(int n, int* secret);
     void refresh();
 };
 
