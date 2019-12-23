@@ -10,7 +10,7 @@ class UserInterface {
       return std::vector<int>();
     }
     virtual void set_score(int round, int n_hits, int n_near) {}
-    virtual void finish_game() {}
+    virtual void finish_game(int n, int* secret) {}
 };
 
 #endif /* USER_INTERFACE_H */
