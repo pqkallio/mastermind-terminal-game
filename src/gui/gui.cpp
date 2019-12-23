@@ -4,18 +4,18 @@
 GUI::GUI() {
   init_colors();
 
-  int tw = PF::WIN_WIDTH + FB::WIN_WIDTH;
-  int th = PF::WIN_HEIGHT + SF::HEIGHT;
+  int tw = PF_WIDTH + FB_WIDTH;
+  int th = PF_HEIGHT + SF_HEIGHT;
   int pfx = (COLS - tw) / 2;
   int pfy = (LINES - th) / 2;
 
-  this->pf = new Playfield(pfy + SF::HEIGHT - 1, pfx);
-  this->fb = new Feedback(pfy + SF::HEIGHT - 1, pfx + PF::WIN_WIDTH - 1);
-  this->sf = new SecretField(pfy, pfx);
+  this->pf = new Playfield(pfy + SF_HEIGHT - 1, pfx, PF_HEIGHT, PF_WIDTH);
+  this->fb = new Feedback(pfy + SF_HEIGHT - 1, pfx + PF_WIDTH - 1, FB_HEIGHT, FB_WIDTH);
+  this->sf = new SecretField(pfy, pfx, SF_HEIGHT, SF_WIDTH);
 
   this->pf->refresh();
-  this->fb->refresh();
   this->sf->refresh();
+  this->fb->refresh();
 }
 
 GUI::~GUI() {
@@ -33,5 +33,6 @@ void GUI::set_score(int round, int n_hits, int n_near) {
 }
 
 void GUI::finish_game(int n, int* secret) {
-  this->sf->endgame(rules::LEN_ROW, secret);
+  int colors[] = {secret[0] + 1, secret[1] + 1, secret[2] + 1, secret[3] + 1};
+  this->sf->endgame(rules::LEN_ROW, colors);
 }

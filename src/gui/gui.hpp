@@ -6,7 +6,15 @@
 #include "playfield.hpp"
 #include "secretfield.hpp"
 
+
 class GUI: public UserInterface {
+  const int FB_HEIGHT = 2 * rules::MAX_ROUNDS + 3;
+  const int FB_WIDTH  = 6;
+  const int PF_HEIGHT = 2 * rules::MAX_ROUNDS + 3;
+  const int PF_WIDTH  = 15;
+  const int SF_HEIGHT = 5;
+  const int SF_WIDTH  = 15;
+
   private:
     Feedback* fb;
     Playfield* pf;

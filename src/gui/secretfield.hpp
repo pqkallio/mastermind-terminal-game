@@ -4,11 +4,6 @@
 #include <ncurses.h>
 #include "../gamelogic/game.hpp"
 
-namespace SF {
-  int WIDTH = rules::LEN_ROW * 2 + 3;
-  int HEIGHT = 5;
-}
-
 class SecretField {
   private:
     const int PSY = 2;
@@ -16,7 +11,7 @@ class SecretField {
     WINDOW* secretfield;
     void render_pieces(int n, int* colors);
   public:
-    SecretField(int y, int x);
+    SecretField(int y, int x, int h, int w);
     ~SecretField();
     void endgame(int n, int* secret);
     void refresh();

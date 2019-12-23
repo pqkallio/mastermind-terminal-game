@@ -2,13 +2,15 @@
 #include "util.hpp"
 #include "colors.hpp"
 
-SecretField::SecretField(int y, int x) {
-  this->secretfield = newwin(SF::HEIGHT, SF::WIDTH, y, x);
+SecretField::SecretField(int y, int x, int h, int w) {
+  this->secretfield = newwin(h, w, y, x);
 
   wborder(this->secretfield,
     ACS_VLINE, ACS_VLINE, ACS_HLINE, ACS_HLINE,
-    ACS_ULCORNER, ACS_URCORNER, ACS_LTEE, ACS_RTEE
+    ACS_ULCORNER, ACS_URCORNER, ACS_LTEE, ACS_PLUS
   );
+
+  this->refresh();
 
   int colors[] = {UNKNOWN_PIECE, UNKNOWN_PIECE, UNKNOWN_PIECE, UNKNOWN_PIECE};
 

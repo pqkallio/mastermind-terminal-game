@@ -1,8 +1,9 @@
 #include "feedback.hpp"
 #include "colors.hpp"
 
-Feedback::Feedback(int y, int x) {
-  this->feedback = newwin(FB::WIN_HEIGHT, FB::WIN_WIDTH, y, x);
+Feedback::Feedback(int y, int x, int h, int w) {
+  this->feedback = newwin(h, w, y, x);
+  this->start_row = h - 3;
 
   wborder(
     this->feedback,
@@ -31,7 +32,7 @@ void Feedback::insert(int y, int x, int n, int c) {
 }
 
 void Feedback::print_result(int round, int n_hits, int n_near) {
-  int y = START_ROW + ROW_INC * round;
+  int y = this->start_row + this->row_inc * round;
   int x = 1;
 
   this->insert(y, x, n_hits, RED_ON_BLACK);

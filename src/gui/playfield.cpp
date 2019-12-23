@@ -2,8 +2,8 @@
 #include "colors.hpp"
 #include "util.hpp"
 
-void Playfield::init_window(int y, int x) {
-  this->playfield = newwin(PF::WIN_HEIGHT, PF::WIN_WIDTH, y, x);
+void Playfield::init_window(int y, int x, int h, int w) {
+  this->playfield = newwin(h, w, y, x);
   noecho();
   keypad(this->playfield, true);
   box(this->playfield, 0, 0);
@@ -17,9 +17,11 @@ void Playfield::clear_pieces() {
   this->unselected = rules::LEN_ROW;
 }
 
-Playfield::Playfield(int y, int x) {
-  this->init_window(y, x);
+Playfield::Playfield(int y, int x, int h, int w) {
+  this->init_window(y, x, h, w);
   this->clear_pieces();
+
+  this->start_row = h - 3;
 
   this->current_col = 0;
   this->current_row = 0;
@@ -84,7 +86,7 @@ int Playfield::view_col(int x) {
 }
 
 int Playfield::view_row(int y) {
-  return START_ROW + y * ROW_FACTOR;
+  return this->start_row + y * ROW_FACTOR;
 }
 
 void Playfield::rehighlight(int y, int x) {

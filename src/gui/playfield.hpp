@@ -12,13 +12,7 @@ static const int PIECE_COLORS[N_PIECE_COLORS] = {
   RED_PIECE, PURPLE_PIECE, BLUE_PIECE, CYAN_PIECE, GREEN_PIECE
 };
 
-namespace PF {
-  const int WIN_WIDTH   = 15;
-  const int WIN_HEIGHT  = rules::MAX_ROUNDS * 2 + 3;
-}
-
 class Playfield {
-  const int START_ROW   = PF::WIN_HEIGHT - 3;
   const int START_COL   = 2;
   const int ROW_FACTOR  = -2;
   const int COL_FACTOR  = 3;
@@ -31,7 +25,8 @@ class Playfield {
     int current_col;
     int pieces[rules::LEN_ROW];
     int unselected;
-    void init_window(int y, int x);
+    int start_row;
+    void init_window(int y, int x, int h, int w);
     void clear_pieces();
     void highlight(int y, int x);
     void rehighlight(int y, int x);
@@ -49,7 +44,7 @@ class Playfield {
     bool add_row();
 
   public:
-    Playfield(int y, int x);
+    Playfield(int y, int x, int h, int w);
     ~Playfield();
     void refresh();
     std::vector<int> get_selection(int round);
