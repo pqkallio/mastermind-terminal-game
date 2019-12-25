@@ -41,7 +41,6 @@ void Game::run() {
     int n_near = 0;
 
     for (size_t i = 0; i != selection.size(); i++) {
-      refresh();
       for (size_t j = 0; j < rules::LEN_ROW; j++) {
         if (selection[i] == this->secret[j]) {
           if (i == j) {

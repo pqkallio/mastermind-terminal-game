@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <chrono>
 #include "feedback.hpp"
 #include "colors.hpp"
 
@@ -23,9 +25,23 @@ void Feedback::refresh() {
 void Feedback::insert(int y, int x, int n, int c) {
   wattron(this->feedback, COLOR_PAIR(c));
 
-  for (int i = 0; i < n; i++) {
-    mvwaddch(this->feedback, y, x, ACS_DIAMOND);
-    x++;
+  std::chrono::nanoseconds present = std::chrono::system_clock::now().time_since_epoch();
+  std::chrono::nanoseconds t = present + std::chrono::seconds(1);
+  int i = 0;
+
+  while (i < n) {
+    present = std::chrono::system_clock::now().time_since_epoch();
+    if (present >= t) {
+      double wait_factor = rand() / RAND_MAX;
+      int wait_ns = 1000000;
+      t = present + std::chrono::nanoseconds(int(wait_ns * wait_factor));
+
+      mvwaddch(this->feedback, y, x, ACS_DIAMOND);
+      this->refresh();
+
+      i++;
+      x++;
+    }
   }
 
   wattroff(this->feedback, COLOR_PAIR(c));
@@ -40,6 +56,4 @@ void Feedback::print_result(int round, int n_hits, int n_near) {
   x += n_hits;
 
   this->insert(y, x, n_near, WHITE_ON_BLACK);
-
-  this->refresh();
 }
